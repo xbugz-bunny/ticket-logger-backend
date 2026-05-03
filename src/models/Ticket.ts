@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export enum TicketStatus {
   Open = 'Open',
+  InProgress = 'In Progress',
   Closed = 'Closed',
 }
 

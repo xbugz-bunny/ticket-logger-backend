@@ -1,3 +1,4 @@
+import { Router } from 'express';
 import { getUsers, approveUser, getAllUsers, updateUserDepartment, updateUserRole, updateUserPermissions, getAdmins } from '../controllers/userController';
 import { authenticate, authorize } from '../middlewares/auth';
 import { UserRole } from '../models/User';

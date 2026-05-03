@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import User, { UserStatus } from '../models/User';
+import User, { UserStatus, UserRole } from '../models/User';
 import ActionLog, { ActionType } from '../models/ActionLog';
 
 export const getUsers = async (req: Request, res: Response) => {
@@ -7,7 +7,7 @@ export const getUsers = async (req: Request, res: Response) => {
     const { role, organizationId } = req.user!;
     let query: any = {};
 
-    if (role === 'Admin') {
+    if (role === UserRole.Admin) {
       query.organizationId = organizationId;
     }
     // SuperAdmin sees all
@@ -35,7 +35,7 @@ export const approveUser = async (req: Request, res: Response) => {
     user.status = UserStatus.Approved;
     
     // Only update org/dept if the actor is an Admin (SuperAdmin can set them manually later or leave as is)
-    if (actor.role === 'Admin') {
+    if (actor.role === UserRole.Admin) {
       user.organizationId = actor.organizationId as any;
       user.departmentId = actor.departmentId as any;
     }
@@ -61,7 +61,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
     const { role, organizationId } = req.user!;
     let query: any = {};
 
-    if (role === 'Admin' || role === 'User') {
+    if (role === UserRole.Admin || role === UserRole.User) {
       query.organizationId = organizationId;
     }
 
@@ -116,7 +116,7 @@ export const updateUserPermissions = async (req: Request, res: Response) => {
 
 export const getAdmins = async (req: Request, res: Response) => {
   try {
-    const admins = await User.find({ role: 'Admin' })
+    const admins = await User.find({ role: UserRole.Admin })
       .populate('organizationId', 'name')
       .populate('departmentId', 'name');
     res.status(200).json(admins);

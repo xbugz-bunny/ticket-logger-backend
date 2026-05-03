@@ -61,32 +61,6 @@ export const getTickets = async (req: Request, res: Response) => {
   }
 };
 
-export const closeTicket = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const actorId = req.user?.id;
-
-    const ticket = await Ticket.findById(id);
-    if (!ticket) return res.status(404).json({ message: 'Ticket not found' });
-
-    ticket.status = TicketStatus.Closed;
-    ticket.closedAt = new Date();
-    await ticket.save();
-
-    // Log action
-    const log = new ActionLog({
-      actorId,
-      actionType: ActionType.CloseTicket,
-      targetId: ticket._id
-    });
-    await log.save();
-
-    res.status(200).json({ message: 'Ticket closed successfully', ticket });
-  } catch (error: any) {
-    res.status(500).json({ message: 'Error closing ticket', error: error.message });
-  }
-};
-
 export const assignUsers = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -125,6 +99,14 @@ export const closeTicket = async (req: Request, res: Response) => {
     );
 
     if (!ticket) return res.status(404).json({ message: 'Ticket not found' });
+
+    // Log action
+    const log = new ActionLog({
+      actorId: responderId,
+      actionType: ActionType.CloseTicket,
+      targetId: ticket._id
+    });
+    await log.save();
 
     res.status(200).json({ message: 'Ticket closed successfully', ticket });
   } catch (error: any) {

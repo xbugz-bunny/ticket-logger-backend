@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import Organization from '../models/Organization';
 import Department from '../models/Department';
 import User from '../models/User';
-import Ticket from '../models/Ticket';
+import Ticket, { TicketStatus } from '../models/Ticket';
 
 export const createOrganization = async (req: Request, res: Response) => {
   try {
@@ -99,7 +99,7 @@ export const getDepartmentDetails = async (req: Request, res: Response) => {
 
     const openTicketsToday = await Ticket.countDocuments({ 
       departmentId: id, 
-      status: 'Open',
+      status: TicketStatus.Open,
       createdAt: { $gte: startOfToday } 
     });
 

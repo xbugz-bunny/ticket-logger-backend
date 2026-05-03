@@ -1,3 +1,4 @@
+import { Router } from 'express';
 import { 
   createOrganization, getOrganizations, createDepartment, 
   getDepartmentsByOrg, getAllDepartments, renameDepartment, getDepartmentDetails 
