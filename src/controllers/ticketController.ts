@@ -102,3 +102,32 @@ export const assignUsers = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error assigning users', error: error.message });
   }
 };
+
+export const closeTicket = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { response } = req.body;
+    const responderId = req.user!.id;
+
+    if (!response) {
+      return res.status(400).json({ message: 'Response is required to close a ticket' });
+    }
+
+    const ticket = await Ticket.findByIdAndUpdate(
+      id,
+      { 
+        status: TicketStatus.Closed, 
+        response, 
+        responderId,
+        closedAt: new Date()
+      },
+      { new: true }
+    );
+
+    if (!ticket) return res.status(404).json({ message: 'Ticket not found' });
+
+    res.status(200).json({ message: 'Ticket closed successfully', ticket });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error closing ticket', error: error.message });
+  }
+};

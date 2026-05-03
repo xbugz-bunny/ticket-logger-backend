@@ -1,5 +1,7 @@
-import { Router } from 'express';
-import { createOrganization, getOrganizations, createDepartment, getDepartmentsByOrg, getAllDepartments } from '../controllers/orgController';
+import { 
+  createOrganization, getOrganizations, createDepartment, 
+  getDepartmentsByOrg, getAllDepartments, renameDepartment, getDepartmentDetails 
+} from '../controllers/orgController';
 import { authenticate, authorize } from '../middlewares/auth';
 import { UserRole } from '../models/User';
 
@@ -10,6 +12,8 @@ router.use(authenticate);
 // SuperAdmin only
 router.post('/organizations', authorize([UserRole.SuperAdmin]), createOrganization);
 router.post('/departments', authorize([UserRole.SuperAdmin]), createDepartment);
+router.patch('/departments/:id', authorize([UserRole.SuperAdmin]), renameDepartment);
+router.get('/departments/:id/details', authorize([UserRole.SuperAdmin]), getDepartmentDetails);
 
 // Available to authenticated users
 router.get('/organizations', getOrganizations);

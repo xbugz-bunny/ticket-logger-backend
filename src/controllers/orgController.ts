@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import Organization from '../models/Organization';
 import Department from '../models/Department';
+import User from '../models/User';
+import Ticket from '../models/Ticket';
 
 export const createOrganization = async (req: Request, res: Response) => {
   try {
@@ -63,5 +65,53 @@ export const getAllDepartments = async (req: Request, res: Response) => {
     res.status(200).json(depts);
   } catch (error: any) {
     res.status(500).json({ message: 'Error fetching all departments', error: error.message });
+  }
+};
+
+export const renameDepartment = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+    const dept = await Department.findByIdAndUpdate(id, { name }, { new: true });
+    res.status(200).json(dept);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error renaming department', error: error.message });
+  }
+};
+
+export const getDepartmentDetails = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const users = await User.find({ departmentId: id }).select('name email role status');
+    
+    const members = users.map(u => ({
+      ...u.toObject(),
+      isPresent: Math.random() > 0.3 // Mocking presence
+    }));
+
+    const totalTicketsToday = await Ticket.countDocuments({ 
+      departmentId: id, 
+      createdAt: { $gte: startOfToday } 
+    });
+
+    const openTicketsToday = await Ticket.countDocuments({ 
+      departmentId: id, 
+      status: 'Open',
+      createdAt: { $gte: startOfToday } 
+    });
+
+    res.status(200).json({
+      members,
+      totalMembers: users.length,
+      stats: {
+        totalTicketsToday,
+        openTicketsToday
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error fetching department details', error: error.message });
   }
 };

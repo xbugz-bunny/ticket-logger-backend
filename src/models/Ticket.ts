@@ -11,6 +11,8 @@ export interface ITicket extends Document {
   assignedUsers: mongoose.Types.ObjectId[];
   questions: string[];
   status: TicketStatus;
+  response?: string;
+  responderId?: mongoose.Types.ObjectId;
   smtpConfig?: {
     host: string;
     port: number;
@@ -29,6 +31,8 @@ const TicketSchema: Schema = new Schema(
     assignedUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     questions: [{ type: String, required: true }],
     status: { type: String, enum: Object.values(TicketStatus), default: TicketStatus.Open },
+    response: { type: String },
+    responderId: { type: Schema.Types.ObjectId, ref: 'User' },
     smtpConfig: {
       host: { type: String },
       port: { type: Number },

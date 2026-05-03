@@ -85,3 +85,42 @@ export const updateUserDepartment = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error updating department', error: error.message });
   }
 };
+
+export const updateUserRole = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+
+    const user = await User.findByIdAndUpdate(id, { role }, { new: true });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.status(200).json({ message: 'Role updated successfully', user });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error updating role', error: error.message });
+  }
+};
+
+export const updateUserPermissions = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { permissions } = req.body;
+
+    const user = await User.findByIdAndUpdate(id, { permissions }, { new: true });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.status(200).json({ message: 'Permissions updated successfully', user });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error updating permissions', error: error.message });
+  }
+};
+
+export const getAdmins = async (req: Request, res: Response) => {
+  try {
+    const admins = await User.find({ role: 'Admin' })
+      .populate('organizationId', 'name')
+      .populate('departmentId', 'name');
+    res.status(200).json(admins);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error fetching admins', error: error.message });
+  }
+};

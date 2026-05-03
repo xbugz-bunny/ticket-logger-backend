@@ -19,6 +19,8 @@ export interface IUser extends Document {
   organizationId?: mongoose.Types.ObjectId;
   departmentId?: mongoose.Types.ObjectId;
   status: UserStatus;
+  permissions: string[]; // e.g. 'manage_tickets', 'manage_users', 'view_reports'
+  metadata: any;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -33,6 +35,7 @@ const UserSchema: Schema = new Schema(
     departmentId: { type: Schema.Types.ObjectId, ref: 'Department' },
     status: { type: String, enum: Object.values(UserStatus), default: UserStatus.Pending },
     metadata: { type: Schema.Types.Mixed, default: {} },
+    permissions: { type: [String], default: [] },
   },
   { timestamps: true }
 );
