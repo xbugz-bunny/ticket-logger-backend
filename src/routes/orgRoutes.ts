@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createOrganization, getOrganizations, createDepartment, getDepartmentsByOrg } from '../controllers/orgController';
+import { createOrganization, getOrganizations, createDepartment, getDepartmentsByOrg, getAllDepartments } from '../controllers/orgController';
 import { authenticate, authorize } from '../middlewares/auth';
 import { UserRole } from '../models/User';
 
