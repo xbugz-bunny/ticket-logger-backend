@@ -56,3 +56,12 @@ export const getDepartmentsByOrg = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error fetching departments', error: error.message });
   }
 };
+
+export const getAllDepartments = async (req: Request, res: Response) => {
+  try {
+    const depts = await Department.find().populate('organizationId', 'name');
+    res.status(200).json(depts);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error fetching all departments', error: error.message });
+  }
+};

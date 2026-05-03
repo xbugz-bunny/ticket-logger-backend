@@ -13,6 +13,7 @@ router.post('/departments', authorize([UserRole.SuperAdmin]), createDepartment);
 
 // Available to authenticated users
 router.get('/organizations', getOrganizations);
+router.get('/departments', getAllDepartments);
 router.get('/organizations/:orgId/departments', getDepartmentsByOrg);
 
 export default router;
