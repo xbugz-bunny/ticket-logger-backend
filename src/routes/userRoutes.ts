@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getUsers, approveUser, getAllUsers } from '../controllers/userController';
+import { getUsers, approveUser, getAllUsers, updateUserDepartment } from '../controllers/userController';
 import { authenticate, authorize } from '../middlewares/auth';
 import { UserRole } from '../models/User';
 
@@ -13,5 +13,6 @@ router.get('/list-all', getAllUsers);
 // Admins and SuperAdmins can manage users
 router.get('/', authorize([UserRole.SuperAdmin, UserRole.Admin]), getUsers);
 router.patch('/:id/approve', authorize([UserRole.SuperAdmin, UserRole.Admin]), approveUser);
+router.patch('/:id/department', authorize([UserRole.SuperAdmin]), updateUserDepartment);
 
 export default router;

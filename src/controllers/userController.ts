@@ -71,3 +71,17 @@ export const getAllUsers = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error fetching users', error: error.message });
   }
 };
+
+export const updateUserDepartment = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { departmentId } = req.body;
+
+    const user = await User.findByIdAndUpdate(id, { departmentId }, { new: true });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.status(200).json({ message: 'Department updated successfully', user });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error updating department', error: error.message });
+  }
+};
